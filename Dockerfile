@@ -1,9 +1,13 @@
-FROM debian:buster-slim
+FROM debian:bookworm-slim
 
-RUN apt-get update && apt-get install -y openconnect ocproxy curl lsof procps && \
+RUN apt-get update && apt-get install -y ocproxy curl lsof procps ssh iputils-ping dnsutils&& \
     apt-get clean && \
     rm -rf /var/cache/apt/* && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* \
+    echo 'deb http://download.opensuse.org/repositories/home:/bluca:/openconnect/Debian_12/ /' | sudo tee /etc/apt/sources.list.d/home:bluca:openconnect.list \
+    curl -fsSL https://download.opensuse.org/repositories/home:bluca:openconnect/Debian_12/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_bluca_openconnect.gpg > /dev/null \
+    apt update \
+    apt install openconnect 
 
 COPY vpn-open vpn-close /usr/bin/
 RUN chmod +x /usr/bin/vpn-open & chmod +x /usr/bin/vpn-close
